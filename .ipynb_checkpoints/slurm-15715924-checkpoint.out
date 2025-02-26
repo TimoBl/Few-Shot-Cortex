@@ -1,0 +1,38 @@
+MY PID: 1642631
+/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/papermill/iorw.py:153: UserWarning: the file is not specified with any extension : -
+  warnings.warn(
+Traceback (most recent call last):
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/bin/papermill", line 8, in <module>
+    sys.exit(papermill())
+             ^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/click/core.py", line 1157, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/click/core.py", line 1078, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/click/core.py", line 1434, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/click/core.py", line 783, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/click/decorators.py", line 33, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/papermill/cli.py", line 254, in papermill
+    execute_notebook(
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/papermill/execute.py", line 134, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+  File "/storage/homefs/tb19m004/.conda/envs/DeepScan/lib/python3.11/site-packages/papermill/execute.py", line 241, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [30]":
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mIndexError[0m                                Traceback (most recent call last)
+Cell [0;32mIn[30], line 1[0m
+[0;32m----> 1[0m plt[38;5;241m.[39mimshow(outer_shell[[38;5;241m150[39m])
+
+[0;31mIndexError[0m: index 150 is out of bounds for axis 0 with size 112
+
