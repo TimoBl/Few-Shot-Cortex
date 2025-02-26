@@ -32,14 +32,12 @@ def get_labels(offset):
     all_labels = labels + ['lh-MeanThickness', 'rh-MeanThickness']
     return lut, labels, all_labels
 
-# remove spikes in
+# clean
 def clean_seg(seg):
     cc, nc = measure.label(seg, connectivity=2, return_num=True)
     cc_max = 1 + np.argmax(np.array([np.count_nonzero(cc == i) for i in range(1, nc + 1)]))
     seg_c = (cc==cc_max).astype(np.float64)
-    seg_c = ndimage.correlate(seg_c, spike_filter)
-    seg_c = np.where(seg_c == 1, 0, seg_c)
-    seg_c = np.where(seg_c, 1, 0)
+    seg_c = binary_closing(seg_c)
     return seg_c
 
 # Transformation for FreeSurfer Space
@@ -66,24 +64,21 @@ def register(mesh, ref_volume, output, volume_info=None, translate=[0, 0, 0]):
     nib.freesurfer.io.write_geometry(output, mesh.vertices, mesh.faces, create_stamp=None, volume_info=volume_info)
     return mesh
 
-# generate mesh from seg using marching cubes
-def gen_mesh2(seg: np.ndarray) -> trimesh.base.Trimesh:
-    #Topology correction algorithm taken from [CORTEXODE]
-    sdf = -ndimage.distance_transform_cdt(seg) + ndimage.distance_transform_cdt(1-seg)
-    sdf = gaussian(sdf.astype(float), sigma=0.5)
-    sdf_topo = topo.apply(sdf, threshold=20)
-    vert, fcs, _, val = measure.marching_cubes(sdf_topo, level=0)
-    mesh = trimesh.base.Trimesh(vertices=vert, faces=fcs)
-    return mesh
+# create marching cubes mesh
+def gen_mesh(level_set):
+    vert, fcs, _, val = measure.marching_cubes(level_set, level=0.0, allow_degenerate=False) # use 0.5 as level set
+    srf = trimesh.base.Trimesh(vertices=vert, faces=fcs)
+    trimesh.repair.fix_normals(srf, multibody=False)
+    return srf
 
-# topological correction algorithm -> produces more artefacts
-def correct(prob):
+# topological correction algorithm 
+def correct(seg, level):
+    
+    # calculate distance
+    sdf = -ndimage.distance_transform_cdt(seg) + ndimage.distance_transform_cdt(1-seg) + level
     
     # correct topology
-    sdf_topo = topo.apply(prob, threshold=0.5)
-    
-    # makes sure to remove border 
-    sdf_topo *= clean_seg(sdf_topo > 0) # fully connected
+    sdf_topo = topo.apply(sdf, threshold=20)
     
     return sdf_topo
 
@@ -189,13 +184,6 @@ def get_surface_stats(pial_srf, nearest_labels):
     return out_surface
 
 
-# convex 2d -> depricated
-def convex2d(img):
-    for i in range(len(img)):
-        img[i] = convex_hull_image(img[i])
-    return img
-
-
 # can be used to find an outer_hull_area
 def rolling_ball(volume, blur_cutoff = 15, ball_diameter = 15, pixdim = 1):
     
@@ -221,7 +209,6 @@ def rolling_ball(volume, blur_cutoff = 15, ball_diameter = 15, pixdim = 1):
     out[out > out] = 255
     
     return out
-
 
 # helper
 def mkdir(OUT_DIR):
