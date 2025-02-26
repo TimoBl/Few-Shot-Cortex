@@ -26,6 +26,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+.ipynb_checkpoints
+*.sh
 
 # remove our results file
 out_*
